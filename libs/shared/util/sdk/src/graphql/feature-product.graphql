@@ -1,0 +1,45 @@
+fragment ProductDetails on Product {
+  id
+  createdAt
+  updatedAt
+  name
+}
+
+query AdminProducts($input: AdminListProductInput) {
+  items: adminProducts(input: $input) {
+    ...ProductDetails
+  }
+  count: adminCountProducts(input: $input) {
+    ...CorePagingDetails
+  }
+}
+
+query AdminCountProducts($input: AdminListProductInput) {
+  count: adminCountProducts(input: $input) {
+    ...CorePagingDetails
+  }
+}
+
+query AdminProduct($productId: String!) {
+  item: adminProduct(productId: $productId) {
+    ...ProductDetails
+  }
+}
+
+mutation AdminCreateProduct($input: AdminCreateProductInput!) {
+  created: adminCreateProduct(input: $input) {
+    ...ProductDetails
+  }
+}
+
+mutation AdminUpdateProduct($productId: String!, $input: AdminUpdateProductInput!) {
+  updated: adminUpdateProduct(productId: $productId, input: $input) {
+    ...ProductDetails
+  }
+}
+
+mutation AdminDeleteProduct($productId: String!) {
+  deleted: adminDeleteProduct(productId: $productId) {
+    ...ProductDetails
+  }
+}

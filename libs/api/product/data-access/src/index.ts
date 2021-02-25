@@ -1,0 +1,6 @@
+export * from './lib/dto/admin-create-product.input'
+export * from './lib/dto/admin-list-product.input'
+export * from './lib/dto/admin-update-product.input'
+export * from './lib/models/product.model'
+export * from './lib/api-product-data-access.module'
+export * from './lib/api-product-data-access.service'

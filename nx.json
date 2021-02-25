@@ -53,6 +53,12 @@
     "api-e2e": {
       "tags": []
     },
+    "api-product-data-access": {
+      "tags": ["scope:api", "type:data-access"]
+    },
+    "api-product-feature": {
+      "tags": ["scope:api", "type:feature"]
+    },
     "api-user-data-access": {
       "tags": ["scope:api", "type:data-access"]
     },
@@ -107,6 +113,12 @@
     },
     "web-layout": {
       "tags": ["scope:web", "type:layout"]
+    },
+    "web-product-feature": {
+      "tags": ["scope:web", "type:feature"]
+    },
+    "web-product-ui": {
+      "tags": ["scope:web", "type:ui"]
     },
     "web-shell-feature": {
       "tags": ["scope:web", "type:feature"]

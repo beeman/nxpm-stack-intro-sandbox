@@ -10,6 +10,7 @@ import { Component } from '@angular/core'
 export class WebAdminFeatureComponent {
   links = [
     { label: 'Dashboard', path: 'dashboard', icon: '' },
+    { label: 'Products', path: 'products', icon: '' },
     { label: 'Users', path: 'users', icon: '' },
   ]
 }

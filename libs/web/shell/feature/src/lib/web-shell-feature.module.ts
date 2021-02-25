@@ -13,6 +13,10 @@ const routes: Routes = [
       // Application routes here
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
+        path: 'products',
+        loadChildren: () => import('@sandbox/web/product/feature').then((m) => m.WebProductFeatureModule),
+      },
+      {
         path: 'about',
         loadChildren: () => import('@sandbox/web/about/feature').then((m) => m.WebAboutFeatureModule),
       },

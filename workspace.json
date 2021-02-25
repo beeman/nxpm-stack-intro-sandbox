@@ -243,6 +243,48 @@
         }
       }
     },
+    "api-product-data-access": {
+      "root": "libs/api/product/data-access",
+      "sourceRoot": "libs/api/product/data-access/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/api/product/data-access/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/product/data-access"],
+          "options": {
+            "jestConfig": "libs/api/product/data-access/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "api-product-feature": {
+      "root": "libs/api/product/feature",
+      "sourceRoot": "libs/api/product/feature/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/api/product/feature/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/product/feature"],
+          "options": {
+            "jestConfig": "libs/api/product/feature/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "api-user-data-access": {
       "root": "libs/api/user/data-access",
       "sourceRoot": "libs/api/user/data-access/src",
@@ -697,6 +739,50 @@
           "outputs": ["coverage/libs/web/layout"],
           "options": {
             "jestConfig": "libs/web/layout/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "web-product-feature": {
+      "projectType": "library",
+      "root": "libs/web/product/feature",
+      "sourceRoot": "libs/web/product/feature/src",
+      "prefix": "product",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/web/product/feature/src/**/*.ts", "libs/web/product/feature/src/**/*.html"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/web/product/feature"],
+          "options": {
+            "jestConfig": "libs/web/product/feature/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "web-product-ui": {
+      "projectType": "library",
+      "root": "libs/web/product/ui",
+      "sourceRoot": "libs/web/product/ui/src",
+      "prefix": "product",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/web/product/ui/src/**/*.ts", "libs/web/product/ui/src/**/*.html"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/web/product/ui"],
+          "options": {
+            "jestConfig": "libs/web/product/ui/jest.config.js",
             "passWithNoTests": true
           }
         }

@@ -6,6 +6,7 @@ import { join } from 'path'
 import { ApiAccountFeatureModule } from '@sandbox/api/account/feature'
 import { ApiAuthFeatureModule } from '@sandbox/api/auth/feature'
 import { ApiUserFeatureModule } from '@sandbox/api/user/feature'
+import { ApiProductFeatureModule } from '@sandbox/api/product/feature'
 
 import { ApiCoreFeatureController } from './api-core-feature.controller'
 import { ApiCoreFeatureResolver } from './api-core-feature.resolver'
@@ -28,6 +29,7 @@ import { ApiCoreFeatureService } from './api-core-feature.service'
     ApiAccountFeatureModule,
     ApiAuthFeatureModule,
     ApiUserFeatureModule,
+    ApiProductFeatureModule,
   ],
   controllers: [ApiCoreFeatureController],
   providers: [ApiCoreFeatureResolver, ApiCoreFeatureService],

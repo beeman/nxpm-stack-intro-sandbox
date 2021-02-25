@@ -39,12 +39,26 @@ export type AccountUpdateProfileInput = {
   phone?: Maybe<Scalars['String']>
 }
 
+export type AdminCreateProductInput = {
+  name: Scalars['String']
+}
+
 export type AdminCreateUserInput = {
   email: Scalars['String']
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
   role: Role
   username?: Maybe<Scalars['String']>
+}
+
+export type AdminListProductInput = {
+  limit?: Maybe<Scalars['Int']>
+  name?: Maybe<Scalars['String']>
+  skip?: Maybe<Scalars['Int']>
+}
+
+export type AdminUpdateProductInput = {
+  name?: Maybe<Scalars['String']>
 }
 
 export type AdminUpdateUserInput = {
@@ -110,9 +124,12 @@ export type Mutation = {
   accountUpdatePassword?: Maybe<Scalars['Boolean']>
   accountUpdateProfile?: Maybe<User>
   accountUpdateUsername?: Maybe<User>
+  adminCreateProduct?: Maybe<Product>
   adminCreateUser?: Maybe<User>
+  adminDeleteProduct?: Maybe<Product>
   adminDeleteUser?: Maybe<User>
   adminSetUserPassword?: Maybe<User>
+  adminUpdateProduct?: Maybe<Product>
   adminUpdateUser?: Maybe<User>
   intercomPub?: Maybe<IntercomMessage>
   login?: Maybe<AuthToken>
@@ -152,8 +169,16 @@ export type MutationAccountUpdateUsernameArgs = {
   username: Scalars['String']
 }
 
+export type MutationAdminCreateProductArgs = {
+  input: AdminCreateProductInput
+}
+
 export type MutationAdminCreateUserArgs = {
   input: AdminCreateUserInput
+}
+
+export type MutationAdminDeleteProductArgs = {
+  productId: Scalars['String']
 }
 
 export type MutationAdminDeleteUserArgs = {
@@ -163,6 +188,11 @@ export type MutationAdminDeleteUserArgs = {
 export type MutationAdminSetUserPasswordArgs = {
   password: Scalars['String']
   userId: Scalars['String']
+}
+
+export type MutationAdminUpdateProductArgs = {
+  input: AdminUpdateProductInput
+  productId: Scalars['String']
 }
 
 export type MutationAdminUpdateUserArgs = {
@@ -184,12 +214,23 @@ export type MutationRegisterArgs = {
   input: RegisterInput
 }
 
+export type Product = {
+  __typename?: 'Product'
+  createdAt?: Maybe<Scalars['DateTime']>
+  id?: Maybe<Scalars['String']>
+  name?: Maybe<Scalars['String']>
+  updatedAt?: Maybe<Scalars['DateTime']>
+}
+
 export type Query = {
   __typename?: 'Query'
   accountEmails?: Maybe<Array<Email>>
   accountProfile?: Maybe<User>
   accountUsernameAvailable?: Maybe<Scalars['Boolean']>
+  adminCountProducts?: Maybe<CorePaging>
   adminCountUsers?: Maybe<CorePaging>
+  adminProduct?: Maybe<Product>
+  adminProducts?: Maybe<Array<Product>>
   adminUser?: Maybe<User>
   adminUsers?: Maybe<Array<User>>
   me?: Maybe<User>
@@ -200,8 +241,20 @@ export type QueryAccountUsernameAvailableArgs = {
   username: Scalars['String']
 }
 
+export type QueryAdminCountProductsArgs = {
+  input?: Maybe<AdminListProductInput>
+}
+
 export type QueryAdminCountUsersArgs = {
   paging?: Maybe<CorePagingInput>
+}
+
+export type QueryAdminProductArgs = {
+  productId: Scalars['String']
+}
+
+export type QueryAdminProductsArgs = {
+  input?: Maybe<AdminListProductInput>
 }
 
 export type QueryAdminUserArgs = {
@@ -392,6 +445,61 @@ export type IntercomSubSubscription = { __typename?: 'Subscription' } & {
   intercomSub?: Maybe<{ __typename?: 'IntercomMessage' } & IntercomDetailsFragment>
 }
 
+export type ProductDetailsFragment = { __typename?: 'Product' } & Pick<
+  Product,
+  'id' | 'createdAt' | 'updatedAt' | 'name'
+>
+
+export type AdminProductsQueryVariables = Exact<{
+  input?: Maybe<AdminListProductInput>
+}>
+
+export type AdminProductsQuery = { __typename?: 'Query' } & {
+  items?: Maybe<Array<{ __typename?: 'Product' } & ProductDetailsFragment>>
+  count?: Maybe<{ __typename?: 'CorePaging' } & CorePagingDetailsFragment>
+}
+
+export type AdminCountProductsQueryVariables = Exact<{
+  input?: Maybe<AdminListProductInput>
+}>
+
+export type AdminCountProductsQuery = { __typename?: 'Query' } & {
+  count?: Maybe<{ __typename?: 'CorePaging' } & CorePagingDetailsFragment>
+}
+
+export type AdminProductQueryVariables = Exact<{
+  productId: Scalars['String']
+}>
+
+export type AdminProductQuery = { __typename?: 'Query' } & {
+  item?: Maybe<{ __typename?: 'Product' } & ProductDetailsFragment>
+}
+
+export type AdminCreateProductMutationVariables = Exact<{
+  input: AdminCreateProductInput
+}>
+
+export type AdminCreateProductMutation = { __typename?: 'Mutation' } & {
+  created?: Maybe<{ __typename?: 'Product' } & ProductDetailsFragment>
+}
+
+export type AdminUpdateProductMutationVariables = Exact<{
+  productId: Scalars['String']
+  input: AdminUpdateProductInput
+}>
+
+export type AdminUpdateProductMutation = { __typename?: 'Mutation' } & {
+  updated?: Maybe<{ __typename?: 'Product' } & ProductDetailsFragment>
+}
+
+export type AdminDeleteProductMutationVariables = Exact<{
+  productId: Scalars['String']
+}>
+
+export type AdminDeleteProductMutation = { __typename?: 'Mutation' } & {
+  deleted?: Maybe<{ __typename?: 'Product' } & ProductDetailsFragment>
+}
+
 export type UserDetailsFragment = { __typename?: 'User' } & Pick<
   User,
   'id' | 'firstName' | 'lastName' | 'name' | 'username' | 'avatarUrl' | 'email' | 'location' | 'phone' | 'bio' | 'role'
@@ -474,6 +582,14 @@ export const IntercomDetailsFragmentDoc = gql`
     type
     scope
     payload
+  }
+`
+export const ProductDetailsFragmentDoc = gql`
+  fragment ProductDetails on Product {
+    id
+    createdAt
+    updatedAt
+    name
   }
 `
 export const UserDetailsFragmentDoc = gql`
@@ -863,6 +979,133 @@ export class IntercomSubGQL extends Apollo.Subscription<IntercomSubSubscription,
     super(apollo)
   }
 }
+export const AdminProductsDocument = gql`
+  query AdminProducts($input: AdminListProductInput) {
+    items: adminProducts(input: $input) {
+      ...ProductDetails
+    }
+    count: adminCountProducts(input: $input) {
+      ...CorePagingDetails
+    }
+  }
+  ${ProductDetailsFragmentDoc}
+  ${CorePagingDetailsFragmentDoc}
+`
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AdminProductsGQL extends Apollo.Query<AdminProductsQuery, AdminProductsQueryVariables> {
+  document = AdminProductsDocument
+
+  constructor(apollo: Apollo.Apollo) {
+    super(apollo)
+  }
+}
+export const AdminCountProductsDocument = gql`
+  query AdminCountProducts($input: AdminListProductInput) {
+    count: adminCountProducts(input: $input) {
+      ...CorePagingDetails
+    }
+  }
+  ${CorePagingDetailsFragmentDoc}
+`
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AdminCountProductsGQL extends Apollo.Query<AdminCountProductsQuery, AdminCountProductsQueryVariables> {
+  document = AdminCountProductsDocument
+
+  constructor(apollo: Apollo.Apollo) {
+    super(apollo)
+  }
+}
+export const AdminProductDocument = gql`
+  query AdminProduct($productId: String!) {
+    item: adminProduct(productId: $productId) {
+      ...ProductDetails
+    }
+  }
+  ${ProductDetailsFragmentDoc}
+`
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AdminProductGQL extends Apollo.Query<AdminProductQuery, AdminProductQueryVariables> {
+  document = AdminProductDocument
+
+  constructor(apollo: Apollo.Apollo) {
+    super(apollo)
+  }
+}
+export const AdminCreateProductDocument = gql`
+  mutation AdminCreateProduct($input: AdminCreateProductInput!) {
+    created: adminCreateProduct(input: $input) {
+      ...ProductDetails
+    }
+  }
+  ${ProductDetailsFragmentDoc}
+`
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AdminCreateProductGQL extends Apollo.Mutation<
+  AdminCreateProductMutation,
+  AdminCreateProductMutationVariables
+> {
+  document = AdminCreateProductDocument
+
+  constructor(apollo: Apollo.Apollo) {
+    super(apollo)
+  }
+}
+export const AdminUpdateProductDocument = gql`
+  mutation AdminUpdateProduct($productId: String!, $input: AdminUpdateProductInput!) {
+    updated: adminUpdateProduct(productId: $productId, input: $input) {
+      ...ProductDetails
+    }
+  }
+  ${ProductDetailsFragmentDoc}
+`
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AdminUpdateProductGQL extends Apollo.Mutation<
+  AdminUpdateProductMutation,
+  AdminUpdateProductMutationVariables
+> {
+  document = AdminUpdateProductDocument
+
+  constructor(apollo: Apollo.Apollo) {
+    super(apollo)
+  }
+}
+export const AdminDeleteProductDocument = gql`
+  mutation AdminDeleteProduct($productId: String!) {
+    deleted: adminDeleteProduct(productId: $productId) {
+      ...ProductDetails
+    }
+  }
+  ${ProductDetailsFragmentDoc}
+`
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AdminDeleteProductGQL extends Apollo.Mutation<
+  AdminDeleteProductMutation,
+  AdminDeleteProductMutationVariables
+> {
+  document = AdminDeleteProductDocument
+
+  constructor(apollo: Apollo.Apollo) {
+    super(apollo)
+  }
+}
 export const AdminUsersDocument = gql`
   query AdminUsers($paging: CorePagingInput) {
     users: adminUsers(paging: $paging) {
@@ -1020,6 +1263,12 @@ export class ApolloAngularSDK {
     private uptimeGql: UptimeGQL,
     private intercomPubGql: IntercomPubGQL,
     private intercomSubGql: IntercomSubGQL,
+    private adminProductsGql: AdminProductsGQL,
+    private adminCountProductsGql: AdminCountProductsGQL,
+    private adminProductGql: AdminProductGQL,
+    private adminCreateProductGql: AdminCreateProductGQL,
+    private adminUpdateProductGql: AdminUpdateProductGQL,
+    private adminDeleteProductGql: AdminDeleteProductGQL,
     private adminUsersGql: AdminUsersGQL,
     private adminUserGql: AdminUserGQL,
     private adminCreateUserGql: AdminCreateUserGQL,
@@ -1163,6 +1412,63 @@ export class ApolloAngularSDK {
     options?: SubscriptionOptionsAlone<IntercomSubSubscriptionVariables>,
   ) {
     return this.intercomSubGql.subscribe(variables, options)
+  }
+
+  adminProducts(variables?: AdminProductsQueryVariables, options?: QueryOptionsAlone<AdminProductsQueryVariables>) {
+    return this.adminProductsGql.fetch(variables, options)
+  }
+
+  adminProductsWatch(
+    variables?: AdminProductsQueryVariables,
+    options?: WatchQueryOptionsAlone<AdminProductsQueryVariables>,
+  ) {
+    return this.adminProductsGql.watch(variables, options)
+  }
+
+  adminCountProducts(
+    variables?: AdminCountProductsQueryVariables,
+    options?: QueryOptionsAlone<AdminCountProductsQueryVariables>,
+  ) {
+    return this.adminCountProductsGql.fetch(variables, options)
+  }
+
+  adminCountProductsWatch(
+    variables?: AdminCountProductsQueryVariables,
+    options?: WatchQueryOptionsAlone<AdminCountProductsQueryVariables>,
+  ) {
+    return this.adminCountProductsGql.watch(variables, options)
+  }
+
+  adminProduct(variables: AdminProductQueryVariables, options?: QueryOptionsAlone<AdminProductQueryVariables>) {
+    return this.adminProductGql.fetch(variables, options)
+  }
+
+  adminProductWatch(
+    variables: AdminProductQueryVariables,
+    options?: WatchQueryOptionsAlone<AdminProductQueryVariables>,
+  ) {
+    return this.adminProductGql.watch(variables, options)
+  }
+
+  adminCreateProduct(
+    variables: AdminCreateProductMutationVariables,
+    options?: MutationOptionsAlone<AdminCreateProductMutation, AdminCreateProductMutationVariables>,
+  ) {
+    return this.adminCreateProductGql.mutate(variables, options)
+  }
+
+  adminUpdateProduct(
+    variables: AdminUpdateProductMutationVariables,
+    options?: MutationOptionsAlone<AdminUpdateProductMutation, AdminUpdateProductMutationVariables>,
+  ) {
+    return this.adminUpdateProductGql.mutate(variables, options)
+  }
+
+  adminDeleteProduct(
+    variables: AdminDeleteProductMutationVariables,
+    options?: MutationOptionsAlone<AdminDeleteProductMutation, AdminDeleteProductMutationVariables>,
+  ) {
+    return this.adminDeleteProductGql.mutate(variables, options)
   }
 
   adminUsers(variables?: AdminUsersQueryVariables, options?: QueryOptionsAlone<AdminUsersQueryVariables>) {

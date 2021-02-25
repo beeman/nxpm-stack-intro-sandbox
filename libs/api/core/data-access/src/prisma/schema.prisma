@@ -45,3 +45,10 @@ model Email {
   // Enable when this is resolved https://github.com/prisma/prisma/issues/3387
   // @@unique([ownerId, primary])
 }
+
+model Product {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+}

@@ -15,6 +15,11 @@ import { WebAdminFeatureComponent } from './web-admin-feature.component'
         children: [
           { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
           {
+            path: 'products',
+            loadChildren: () => import('./admin-product/admin-product.module').then((m) => m.AdminProductModule),
+          },
+
+          {
             path: 'dashboard',
             loadChildren: () => import('./admin-dashboard/admin-dashboard.module').then((m) => m.AdminDashboardModule),
           },

@@ -22,12 +22,26 @@ input AccountUpdateProfileInput {
   phone: String
 }
 
+input AdminCreateProductInput {
+  name: String!
+}
+
 input AdminCreateUserInput {
   email: String!
   firstName: String
   lastName: String
   role: Role!
   username: String
+}
+
+input AdminListProductInput {
+  limit: Int = 10
+  name: String
+  skip: Int = 0
+}
+
+input AdminUpdateProductInput {
+  name: String
 }
 
 input AdminUpdateUserInput {
@@ -98,9 +112,12 @@ type Mutation {
   accountUpdatePassword(input: AccountUpdatePasswordInput!): Boolean
   accountUpdateProfile(input: AccountUpdateProfileInput!): User
   accountUpdateUsername(username: String!): User
+  adminCreateProduct(input: AdminCreateProductInput!): Product
   adminCreateUser(input: AdminCreateUserInput!): User
+  adminDeleteProduct(productId: String!): Product
   adminDeleteUser(userId: String!): User
   adminSetUserPassword(password: String!, userId: String!): User
+  adminUpdateProduct(input: AdminUpdateProductInput!, productId: String!): Product
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   intercomPub(payload: JSON, scope: String, type: String!): IntercomMessage
   login(input: LoginInput!): AuthToken
@@ -108,11 +125,21 @@ type Mutation {
   register(input: RegisterInput!): AuthToken
 }
 
+type Product {
+  createdAt: DateTime
+  id: String
+  name: String
+  updatedAt: DateTime
+}
+
 type Query {
   accountEmails: [Email!]
   accountProfile: User
   accountUsernameAvailable(username: String!): Boolean
+  adminCountProducts(input: AdminListProductInput): CorePaging
   adminCountUsers(paging: CorePagingInput): CorePaging
+  adminProduct(productId: String!): Product
+  adminProducts(input: AdminListProductInput): [Product!]
   adminUser(userId: String!): User
   adminUsers(paging: CorePagingInput): [User!]
   me: User
