@@ -3,6 +3,7 @@ fragment ProductDetails on Product {
   createdAt
   updatedAt
   name
+  price
 }
 
 query AdminProducts($input: AdminListProductInput) {
@@ -40,6 +41,12 @@ mutation AdminUpdateProduct($productId: String!, $input: AdminUpdateProductInput
 
 mutation AdminDeleteProduct($productId: String!) {
   deleted: adminDeleteProduct(productId: $productId) {
+    ...ProductDetails
+  }
+}
+
+query PublicProducts {
+  products: publicProducts {
     ...ProductDetails
   }
 }

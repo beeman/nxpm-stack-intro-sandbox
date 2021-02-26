@@ -41,6 +41,7 @@ export type AccountUpdateProfileInput = {
 
 export type AdminCreateProductInput = {
   name: Scalars['String']
+  price: Scalars['Int']
 }
 
 export type AdminCreateUserInput = {
@@ -59,6 +60,7 @@ export type AdminListProductInput = {
 
 export type AdminUpdateProductInput = {
   name?: Maybe<Scalars['String']>
+  price?: Maybe<Scalars['Int']>
 }
 
 export type AdminUpdateUserInput = {
@@ -219,6 +221,7 @@ export type Product = {
   createdAt?: Maybe<Scalars['DateTime']>
   id?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
+  price?: Maybe<Scalars['Int']>
   updatedAt?: Maybe<Scalars['DateTime']>
 }
 
@@ -234,6 +237,7 @@ export type Query = {
   adminUser?: Maybe<User>
   adminUsers?: Maybe<Array<User>>
   me?: Maybe<User>
+  publicProducts?: Maybe<Array<Product>>
   uptime?: Maybe<Scalars['Float']>
 }
 
@@ -447,7 +451,7 @@ export type IntercomSubSubscription = { __typename?: 'Subscription' } & {
 
 export type ProductDetailsFragment = { __typename?: 'Product' } & Pick<
   Product,
-  'id' | 'createdAt' | 'updatedAt' | 'name'
+  'id' | 'createdAt' | 'updatedAt' | 'name' | 'price'
 >
 
 export type AdminProductsQueryVariables = Exact<{
@@ -498,6 +502,12 @@ export type AdminDeleteProductMutationVariables = Exact<{
 
 export type AdminDeleteProductMutation = { __typename?: 'Mutation' } & {
   deleted?: Maybe<{ __typename?: 'Product' } & ProductDetailsFragment>
+}
+
+export type PublicProductsQueryVariables = Exact<{ [key: string]: never }>
+
+export type PublicProductsQuery = { __typename?: 'Query' } & {
+  products?: Maybe<Array<{ __typename?: 'Product' } & ProductDetailsFragment>>
 }
 
 export type UserDetailsFragment = { __typename?: 'User' } & Pick<
@@ -590,6 +600,7 @@ export const ProductDetailsFragmentDoc = gql`
     createdAt
     updatedAt
     name
+    price
   }
 `
 export const UserDetailsFragmentDoc = gql`
@@ -1106,6 +1117,25 @@ export class AdminDeleteProductGQL extends Apollo.Mutation<
     super(apollo)
   }
 }
+export const PublicProductsDocument = gql`
+  query PublicProducts {
+    products: publicProducts {
+      ...ProductDetails
+    }
+  }
+  ${ProductDetailsFragmentDoc}
+`
+
+@Injectable({
+  providedIn: 'root',
+})
+export class PublicProductsGQL extends Apollo.Query<PublicProductsQuery, PublicProductsQueryVariables> {
+  document = PublicProductsDocument
+
+  constructor(apollo: Apollo.Apollo) {
+    super(apollo)
+  }
+}
 export const AdminUsersDocument = gql`
   query AdminUsers($paging: CorePagingInput) {
     users: adminUsers(paging: $paging) {
@@ -1269,6 +1299,7 @@ export class ApolloAngularSDK {
     private adminCreateProductGql: AdminCreateProductGQL,
     private adminUpdateProductGql: AdminUpdateProductGQL,
     private adminDeleteProductGql: AdminDeleteProductGQL,
+    private publicProductsGql: PublicProductsGQL,
     private adminUsersGql: AdminUsersGQL,
     private adminUserGql: AdminUserGQL,
     private adminCreateUserGql: AdminCreateUserGQL,
@@ -1469,6 +1500,17 @@ export class ApolloAngularSDK {
     options?: MutationOptionsAlone<AdminDeleteProductMutation, AdminDeleteProductMutationVariables>,
   ) {
     return this.adminDeleteProductGql.mutate(variables, options)
+  }
+
+  publicProducts(variables?: PublicProductsQueryVariables, options?: QueryOptionsAlone<PublicProductsQueryVariables>) {
+    return this.publicProductsGql.fetch(variables, options)
+  }
+
+  publicProductsWatch(
+    variables?: PublicProductsQueryVariables,
+    options?: WatchQueryOptionsAlone<PublicProductsQueryVariables>,
+  ) {
+    return this.publicProductsGql.watch(variables, options)
   }
 
   adminUsers(variables?: AdminUsersQueryVariables, options?: QueryOptionsAlone<AdminUsersQueryVariables>) {

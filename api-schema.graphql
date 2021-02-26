@@ -24,6 +24,7 @@ input AccountUpdateProfileInput {
 
 input AdminCreateProductInput {
   name: String!
+  price: Int!
 }
 
 input AdminCreateUserInput {
@@ -42,6 +43,7 @@ input AdminListProductInput {
 
 input AdminUpdateProductInput {
   name: String
+  price: Int
 }
 
 input AdminUpdateUserInput {
@@ -129,6 +131,7 @@ type Product {
   createdAt: DateTime
   id: String
   name: String
+  price: Int
   updatedAt: DateTime
 }
 
@@ -143,6 +146,7 @@ type Query {
   adminUser(userId: String!): User
   adminUsers(paging: CorePagingInput): [User!]
   me: User
+  publicProducts: [Product!]
   uptime: Float
 }
 

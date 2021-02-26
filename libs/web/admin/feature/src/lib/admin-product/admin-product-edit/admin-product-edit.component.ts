@@ -22,12 +22,12 @@ import { AdminProductEditStore } from './admin-product-edit.store'
 export class AdminProductEditComponent {
   readonly vm$ = this.store.vm$
   readonly form = new FormGroup({})
-  fields = [WebUiFormField.input('name', { label: 'Name' })]
+  fields = [WebUiFormField.input('name', { label: 'Name' }), WebUiFormField.number('price', { label: 'Price', min: 0 })]
 
   constructor(private readonly store: AdminProductEditStore) {}
 
   updateProduct(input: AdminUpdateProductInput) {
-    const { name } = input
-    this.store.updateProductEffect({ name })
+    const { name, price } = input
+    this.store.updateProductEffect({ name, price })
   }
 }

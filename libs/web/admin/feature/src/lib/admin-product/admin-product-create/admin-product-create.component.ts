@@ -17,7 +17,10 @@ import { AdminProductCreateStore } from './admin-product-create.store'
 })
 export class AdminProductCreateComponent {
   readonly vm$ = this.store.vm$
-  fields = [WebUiFormField.input('name', { label: 'Name' })]
+  fields = [
+    WebUiFormField.input('name', { label: 'Name', required: true }),
+    WebUiFormField.number('price', { label: 'Price', required: true, min: 0 }),
+  ]
   constructor(private readonly store: AdminProductCreateStore) {}
 
   createProduct(input) {

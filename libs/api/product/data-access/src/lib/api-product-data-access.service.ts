@@ -31,18 +31,22 @@ export class ApiProductDataAccessService {
 
   adminCreateProduct(adminId: string, input: AdminCreateProductInput) {
     return this.data.product.create({
-      data: { name: input.name },
+      data: { name: input.name, price: input.price },
     })
   }
 
   adminUpdateProduct(adminId: string, productId, input: AdminUpdateProductInput) {
     return this.data.product.update({
       where: { id: productId },
-      data: { name: input.name },
+      data: { name: input.name, price: input.price },
     })
   }
 
   adminDeleteProduct(adminId: string, productId) {
     return this.data.product.delete({ where: { id: productId } })
+  }
+
+  publicProducts() {
+    return this.data.product.findMany()
   }
 }
